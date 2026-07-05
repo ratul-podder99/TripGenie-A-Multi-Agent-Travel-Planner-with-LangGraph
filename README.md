@@ -21,26 +21,28 @@ Instead of one generic LLM call, TripGenie breaks trip planning into specialized
 
 TripGenie models the trip-planning process as a directed graph of agents, each mutating a shared `TravelState`:
 
-  START
-    │
-    ▼
-┌───────────────┐
-│ Flight Agent  │  → searches flights for the query
-└───────┬───────┘
-        ▼
-┌───────────────┐
-│ Hotel Agent   │  → searches hotels via Tavily
-└───────┬───────┘
-        ▼
-┌───────────────┐
-│Itinerary Agent│  → LLM drafts a day-by-day plan
-└───────┬───────┘
-        ▼
-┌───────────────┐
-│ Final Agent   │  → LLM composes the final formatted answer
-└───────┬───────┘
-        ▼
-       END
+```
+        START
+          │
+          ▼
+   ┌───────────────┐
+   │ Flight Agent  │  → searches flights for the query
+   └───────┬───────┘
+           ▼
+   ┌───────────────┐
+   │ Hotel Agent   │  → searches hotels via Tavily
+   └───────┬───────┘
+           ▼
+   ┌───────────────┐
+   │Itinerary Agent│  → LLM drafts a day-by-day plan
+   └───────┬───────┘
+           ▼
+   ┌───────────────┐
+   │ Final Agent   │  → LLM composes the final formatted answer
+   └───────┬───────┘
+           ▼
+          END
+```
 
 Each node updates a shared state object (`messages`, `user_query`, `flight_results`, `hotel_results`, `itinerary`, `llm_calls`), and the final response is formatted into six sections: **Trip Summary, Flight Information, Hotel Suggestions, Day-by-Day Itinerary, Estimated Budget, and Final Recommendations.**
 
@@ -66,14 +68,16 @@ Conversation state is checkpointed to PostgreSQL via `langgraph-checkpoint-postg
 
 ## 📁 Project Structure
 
+```
 TripGenie-A-Multi-Agent-Travel-Planner-with-LangGraph/
-├── app.py               # FastAPI app: routes, request/response handling
-├── backend.py            # LangGraph state graph, agents, and PostgreSQL checkpointer
-├── tools/                 # Agent tools (flight search, Tavily web search)
-├── static/                # Frontend static assets (CSS/JS)
-├── templates/              # Jinja2 HTML templates (index.html, etc.)
-├── requirements.txt        # Python dependencies
+├── app.py                  # FastAPI app: routes, request/response handling
+├── backend.py              # LangGraph state graph, agents, and PostgreSQL checkpointer
+├── tools/                  # Agent tools (flight search, Tavily web search)
+├── static/                 # Frontend static assets (CSS/JS)
+├── templates/               # Jinja2 HTML templates (index.html, etc.)
+├── requirements.txt         # Python dependencies
 └── .gitignore
+```
 
 ---
 
@@ -90,40 +94,45 @@ TripGenie-A-Multi-Agent-Travel-Planner-with-LangGraph/
 ## ⚙️ Installation
 
 1. **Clone the repository**
-```bash
+
+   ```bash
    git clone https://github.com/ratul-podder99/TripGenie-A-Multi-Agent-Travel-Planner-with-LangGraph.git
    cd TripGenie-A-Multi-Agent-Travel-Planner-with-LangGraph
-```
+   ```
 
 2. **Create and activate a virtual environment**
-```bash
+
+   ```bash
    python -m venv venv
    source venv/bin/activate      # On Windows: venv\Scripts\activate
-```
+   ```
 
 3. **Install dependencies**
-```bash
+
+   ```bash
    pip install -r requirements.txt
-```
+   ```
 
 4. **Configure environment variables**
 
    Create a `.env` file in the project root:
-```env
+
+   ```env
    GROQ_API_KEY=your_groq_api_key
    TAVILY_API_KEY=your_tavily_api_key
    DATABASE_URL=postgresql://user:password@host:5432/dbname
-```
+   ```
    > `DATABASE_URL` is required — the app raises an error on startup if it's missing. If your connection string doesn't include `sslmode`, the app automatically appends `sslmode=require`.
 
 5. **Run the application**
-```bash
+
+   ```bash
    python app.py
-```
+   ```
    or
-```bash
+   ```bash
    uvicorn app:app --reload
-```
+   ```
 
    The app will be available at **http://127.0.0.1:8000**.
 
